@@ -20,6 +20,19 @@ app.use(cors());
 app.use('/uploads',express.static('uploads'));
 
 
+app.get('/banners', (req,res)=>{
+  models.Banner.findAll({
+    limit : 2
+  }).then((result) =>{
+    res.send({
+      banners : result,
+    });
+  }).catch((err)=>{
+    console.log(err);
+    res.status(500).send('에러가 발생했습니다.');
+  })
+})
+
 app.get('/products',(req,res) => {
   models.Product.findAll({
     order : [['createdAt', 'DESC']],
@@ -29,7 +42,8 @@ app.get('/products',(req,res) => {
       'price',
       'createdAt',
       'seller',
-      'imageUrl'
+      'imageUrl',
+      'soldout'
     ]
   }).then((result)=>{
     console.log("products" , result);
@@ -88,6 +102,27 @@ app.post('/image',upload.single('image'),(req,res) =>{
   const file = req.file;
   res.send({
     imageUrl : file.path,
+  })
+});
+
+app.post('/purchase/:id',(req,res)=>{
+  const {id} = req.params;
+  models.Product.update(
+    {
+      soldout :1
+    },
+    {
+      where : {
+        id
+      }
+    }
+  ).then((result)=>{
+    res.send({
+      result : true,
+    })
+  }).catch((err)=>{
+    console.log(err);
+    res.status(500).send('에러가 발생했습니다.');
   })
 });
 

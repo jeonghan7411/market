@@ -1,10 +1,10 @@
 #banner {
-  height: 300px;
+  max-height: 300px;
 }
 
 #banner > img {
   width: 100%;
-  height: 300px;
+  max-height: 300px;
 }
 
 #body > h1 {
@@ -25,6 +25,19 @@
   border: 1px solid rgb(230, 230, 230);
   border-radius: 12px;
   overflow: hidden;
+  position: relative;
+}
+
+.product-blur{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #ffffffaa;
+  /* 16진수로 표현후 뒤에 2자리로 투명도 조절 가능 */
+  /* pointer-events: none; */
+  /* blur가 가리기때문에 클릭이벤트 안먹음 이코드를 사용하면 클릭이벤트 가능 */
 }
 
 .product-img {
