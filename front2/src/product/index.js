@@ -6,11 +6,13 @@ import './index.css';
 import {API_URL} from '../config/constants.js'
 import dayjs from 'dayjs';
 import {Button, message} from 'antd';
+import ProductCard from '../components/ProductCard.js';
 
 
 function ProductPage() {
   const {id} = useParams();
   const [product, setProduct] = useState(null);
+  const [products, setProducts] = useState([]);
 
   const getProduct = () => {
     axios.get(`${API_URL}/products/${id}`).then((res)=>{
@@ -20,9 +22,19 @@ function ProductPage() {
     })
   };
 
+  const getRecommendations = () => {
+    axios.get(`${API_URL}/products/${id}/recommendation`)
+    .then((result)=>{
+      setProducts(result.data.products);
+    }).catch((error)=>{
+      console.error(error);
+    })
+  }
+
   useEffect(()=>{
     getProduct();
-  },[]);
+    getRecommendations();
+  },[id]);
 
   // 로딩중
   if (!product) {
@@ -55,7 +67,19 @@ function ProductPage() {
         <Button id='purchase-button' size='large' type='primary' danger onClick={onClickPurchase} disabled={product.soldout === 1 ? true : false}>
           재빨리 구매하기
         </Button>
-        <pre id='description'>{product.description}</pre>
+        <div id='description-box'>
+          <pre id='description'>{product.description}</pre>
+        </div>
+        <h1>추천 상품</h1>
+        <div style={{display:'flex',flexWrap : 'wrap' }}>
+          {
+            products.map((product,index)=>{
+              return (
+                <ProductCard product={product} key={index}/>
+              )
+            })
+          }
+        </div>
       </div>
     </div>
   );
